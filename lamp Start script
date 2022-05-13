@@ -1,0 +1,6 @@
+#!/bin/bash
+#This is script for restart xmapp
+/opt/lampp/lampp start
+systemctl restart openfire
+systemctl status  openfire
+exit
