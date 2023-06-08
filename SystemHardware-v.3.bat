@@ -1,51 +1,42 @@
-::[Bat To Exe Converter]
-::
-::YAwzoRdxOk+EWAnk
-::fBw5plQjdG8=
-::YAwzuBVtJxjWCl3EqQJgSA==
-::ZR4luwNxJguZRRnk
-::Yhs/ulQjdF+5
-::cxAkpRVqdFKZSDk=
-::cBs/ulQjdF+5
-::ZR41oxFsdFKZSDk=
-::eBoioBt6dFKZSDk=
-::cRo6pxp7LAbNWATEpCI=
-::egkzugNsPRvcWATEpCI=
-::dAsiuh18IRvcCxnZtBJQ
-::cRYluBh/LU+EWAnk
-::YxY4rhs+aU+JeA==
-::cxY6rQJ7JhzQF1fEqQJQ
-::ZQ05rAF9IBncCkqN+0xwdVs0
-::ZQ05rAF9IAHYFVzEqQJQ
-::eg0/rx1wNQPfEVWB+kM9LVsJDGQ=
-::fBEirQZwNQPfEVWB+kM9LVsJDGQ=
-::cRolqwZ3JBvQF1fEqQJQ
-::dhA7uBVwLU+EWDk=
-::YQ03rBFzNR3SWATElA==
-::dhAmsQZ3MwfNWATElA==
-::ZQ0/vhVqMQ3MEVWAtB9wSA==
-::Zg8zqx1/OA3MEVWAtB9wSA==
-::dhA7pRFwIByZRRnk
-::Zh4grVQjdCyDJGyX8VAjFA1VXhGMN1eeA6YX/Ofr09mesVkYWco+aovM26aLbuUL7yU=
-::YB416Ek+ZG8=
-::
-::
-::978f952a14a936cc963da21a135fa983
 @echo off&setlocal
 echo ************************
 echo DO NOT CLOSE THIS WINDOW
-set "SystemHardware="%userprofile%\desktop\SystemHardware.txt"
+mkdir c:\shd
+cd c:\shd
+curl.exe https://webwerks.dl.sourceforge.net/project/winscp/WinSCP/6.1/WinSCP-6.1.msi -O
+call msiexec.exe /i "c:\shd\WinSCP-6.1.msi" /qn
+call set "SystemHardware="c:\shd\shd_%computername%.txt"
 (
- systeminfo
+systeminfo | findstr /C:"Host Name"
+systeminfo | findstr /C:"OS Name"
+systeminfo | findstr /C:"OS Version"
+systeminfo | findstr /C:"Product ID"
+systeminfo | findstr /C:"Original Install Date"
+systeminfo | findstr /C:"System Manufacturer"
+systeminfo | findstr /C:"System Model"
+systeminfo | findstr /C:"System Type"
 wmic cpu get name
+systeminfo | findstr /C:"Total Physical Memory"
+powershell "get-physicaldisk | format-table -autosize"
+getmac /v /fo list | findstr /C:"Physical Address"
+tracert -h 1 google.com
+nslookup exit /b
 )>"%SystemHardware%"            
 type "%SystemHardware%" 
-cd %userprofile%\desktop
-erase SystemHardware.jpg
-ren SystemHardware.txt SystemHardware.jpg
+cscript C:\Windows\System32\slmgr.vbs /dli > c:\shd\wad_%computername%.txt
+"C:\Program Files (x86)\WinSCP\WinSCP.com" ^
+  /log="C:\WinSCP.log" /ini=nul ^
+  /command ^
+    "open ftpes://images%%40samtechdatasys.in:abc%%4012345@mail.samtechdatasys.in:1222/ -rawsettings ProxyPort=0" ^
+   "put C:\shd\*.txt /SystemHarwareDeatils/*.txt" ^
+    "exit"
 
-echo Your system hardware details has been collected
-echo Kindly email this to hr@samtechdatasys.com and CC techsupport@samtechdatasys.com
-@pause
-
-exit
+set WINSCP_RESULT=%ERRORLEVEL%
+if %WINSCP_RESULT% equ 0 (
+  echo Success
+) else (
+  echo Error
+)
+cd c:\
+rmdir /s /q shd
+exit /b %WINSCP_RESULT%
